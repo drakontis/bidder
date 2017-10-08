@@ -25,8 +25,10 @@ class Campaign
     campaigns
   end
 
-  def applicable_for_bid_submission?
-    Bid::BidSubmission.where(campaign_id: id).where(created_at: Time.now.beginning_of_minute..Time.now.end_of_minute).count < PER_MINUTE_PACING_LIMIT
+  def is_applicable_for_bid_submission?(country:)
+    targeted_countries.include?(country) &&
+        Bid::BidSubmission.where(campaign_id: id).
+            where(created_at: Time.now.beginning_of_minute..Time.now.end_of_minute).count < PER_MINUTE_PACING_LIMIT
   end
 
   #######
@@ -35,7 +37,6 @@ class Campaign
 
   def self.fetch_campaigns
     url = 'http://campaigns.apiblueprint.org/campaigns'
-    # url = 'https://jsonplaceholder.typicode.com/posts'
 
     response = RestClient.get(url)
 
