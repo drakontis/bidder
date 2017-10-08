@@ -96,7 +96,9 @@ describe BidRequestsController, :type => :controller do
     }
 
     it 'should respond with a bid' do
-      post :create, {bid_request: bid_request_json}
+      expect do
+        post :create, {bid_request: bid_request_json}
+      end.to change{ Bid::BidSubmission.count }.by 1
 
       expect(response.status).to eq 200
       expect((JSON.parse(response.body).as_json)).to eq expected_body.as_json
@@ -179,7 +181,9 @@ describe BidRequestsController, :type => :controller do
     let(:expected_body) { {} }
 
     it 'should respond with a bid' do
-      post :create, {bid_request: bid_request_json}
+      expect do
+        post :create, {bid_request: bid_request_json}
+      end.not_to change{ Bid::BidSubmission.count }
 
       expect(response.status).to eq 204
       expect((JSON.parse(response.body).as_json)).to eq expected_body.as_json

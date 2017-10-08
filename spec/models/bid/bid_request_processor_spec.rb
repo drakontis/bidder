@@ -199,7 +199,11 @@ describe Bid::BidRequestProcessor do
       end
 
       it 'should return empty bid submission' do
-        process_result = Bid::BidRequestProcessor.new(json).process
+        process_result = nil
+
+        expect do
+          process_result = Bid::BidRequestProcessor.new(json).process
+        end.not_to change{ Bid::BidSubmission.count }
 
         expect(process_result).to be_nil
       end
