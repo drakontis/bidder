@@ -209,12 +209,18 @@ describe Campaign do
 
       context "when bid submissions with the campaign's id exists" do
         context 'the number of bid submissions is equal to threshold' do
+          let(:beginning_of_minute) { Time.new(2017, 10, 8, 20, 40, 0) }
+          let(:end_of_minute) { Time.new(2017, 10, 8, 20, 40, 59) }
+
           before do
             stub_const("Campaign::PER_MINUTE_PACING_LIMIT", 2)
 
             2.times do |index|
-              Bid::BidSubmission.new(bid_request_id: "bid_req_id_#{index+1}", campaign_id: "camp_id", price: 1.1, adm: "test_adm").save!
+              Bid::BidSubmission.new(bid_request_id: "bid_req_id_#{index+1}", campaign_id: "camp_id", price: 1.1, adm: "test_adm", created_at: beginning_of_minute + (30+index).seconds).save!
             end
+
+            allow(Time).to receive_message_chain(:now, :beginning_of_minute).and_return beginning_of_minute
+            allow(Time).to receive_message_chain(:now, :end_of_minute).and_return end_of_minute
           end
 
           it 'should return false' do
@@ -223,12 +229,16 @@ describe Campaign do
         end
 
         context 'the number of bid submissions is less than the threshold' do
+          let(:beginning_of_minute) { Time.new(2017, 10, 8, 20, 40, 0) }
+          let(:end_of_minute) { Time.new(2017, 10, 8, 20, 40, 59) }
+
           before do
             stub_const("Campaign::PER_MINUTE_PACING_LIMIT", 2)
+            Bid::BidSubmission.new(bid_request_id: "bid_req_id_1", campaign_id: "camp_id", price: 1.1, adm: "test_adm", created_at: beginning_of_minute + 30.seconds).save!
+            Bid::BidSubmission.new(bid_request_id: "bid_req_id_1", campaign_id: "camp_id", price: 1.1, adm: "test_adm", created_at: beginning_of_minute + 70.seconds).save!
 
-            1.times do |index|
-              Bid::BidSubmission.new(bid_request_id: "bid_req_id_#{index+1}", campaign_id: "camp_id", price: 1.1, adm: "test_adm").save!
-            end
+            allow(Time).to receive_message_chain(:now, :beginning_of_minute).and_return beginning_of_minute
+            allow(Time).to receive_message_chain(:now, :end_of_minute).and_return end_of_minute
           end
 
           it 'should return true' do
