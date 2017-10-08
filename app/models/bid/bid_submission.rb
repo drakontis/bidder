@@ -1,10 +1,8 @@
 module Bid
-  class BidSubmission
-    include ActiveModel::Model
-
-    attr_accessor :bid_request_id,
-                  :campaign_id,
-                  :price,
-                  :adm
+  class BidSubmission < ActiveRecord::Base
+    validates :bid_request_id, presence: true
+    validates :campaign_id,    presence: true
+    validates :price,          presence: true
+    validates :adm,            presence: true
   end
 end

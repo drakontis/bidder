@@ -11,9 +11,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 0) do
+ActiveRecord::Schema.define(version: 20171008124901) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "bid_submissions", force: true do |t|
+    t.string  "bid_request_id", null: false
+    t.string  "campaign_id",    null: false
+    t.decimal "price",          null: false
+    t.text    "adm",            null: false
+  end
+
+  add_index "bid_submissions", ["bid_request_id"], name: "bid_submissions_bid_request_id_idx", using: :btree
+  add_index "bid_submissions", ["campaign_id"], name: "bid_submissions_campaign_id_idx", using: :btree
 
 end

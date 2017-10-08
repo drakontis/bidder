@@ -177,10 +177,15 @@ describe Bid::BidRequestProcessor do
         double('CampaignResponse', code: 200, body: campaigns_api_response_body)
       end
 
-      it 'should return the bid response' do
-        process_result = Bid::BidRequestProcessor.new(json).process
+      it 'should return the bid response and save the bid submission' do
+        process_result = nil
+
+        expect do
+          process_result = Bid::BidRequestProcessor.new(json).process
+        end.to change{Bid::BidSubmission.count}.by 1
 
         expect(process_result).to be_a Bid::BidSubmission
+        expect(process_result).to be_persisted
         expect(process_result.bid_request_id).to eq 'e7fe51ce4f6376876353ff0961c2cb0d'
         expect(process_result.campaign_id).to eq '5a3dce46'
         expect(process_result.price).to eq 1.23

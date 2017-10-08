@@ -11,17 +11,33 @@ module Bid
     end
 
     def process
-      matching_campaigns = campaigns.select{ |campaign| campaign.targeted_countries.include? bid_request.device.geo.country }
-      winner_campaign = matching_campaigns.max_by(&:price)
+      winner_campaign = find_winner_campaign
 
       if winner_campaign.present?
-        Bid::BidSubmission.new(bid_request_id: bid_request.id,
-                               campaign_id: winner_campaign.id,
-                               price: winner_campaign.price,
-                               adm: winner_campaign.adm)
+        create_bid_submission(winner_campaign)
       else
         nil
       end
+    end
+
+    #######
+    private
+    #######
+
+    def find_winner_campaign
+      matching_campaigns = campaigns.select{ |campaign| campaign.targeted_countries.include? bid_request.device.geo.country }
+      matching_campaigns.max_by(&:price)
+    end
+
+    def create_bid_submission(campaign)
+      bid_submission = Bid::BidSubmission.new(bid_request_id: bid_request.id,
+                                              campaign_id: campaign.id,
+                                              price: campaign.price,
+                                              adm: campaign.adm)
+      bid_submission.save!
+      bid_submission
+    rescue
+      nil
     end
   end
 end
