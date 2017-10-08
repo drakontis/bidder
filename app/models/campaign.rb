@@ -1,6 +1,8 @@
 class Campaign
   include ActiveModel::Model
 
+  PER_MINUTE_PACING_LIMIT = 100
+
   attr_accessor :id,
                 :name,
                 :price,
@@ -23,6 +25,10 @@ class Campaign
     campaigns
   end
 
+  def applicable_for_bid_submission?
+    Bid::BidSubmission.where(campaign_id: id).where(created_at: Time.now.beginning_of_minute..Time.now.end_of_minute).count < PER_MINUTE_PACING_LIMIT
+  end
+
   #######
   private
   #######
@@ -38,8 +44,6 @@ class Campaign
     else
       []
     end
-
-
 
     # # TODO Remove it
     # response = '[

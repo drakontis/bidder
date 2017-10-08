@@ -17,10 +17,12 @@ ActiveRecord::Schema.define(version: 20171008124901) do
   enable_extension "plpgsql"
 
   create_table "bid_submissions", force: true do |t|
-    t.string  "bid_request_id", null: false
-    t.string  "campaign_id",    null: false
-    t.decimal "price",          null: false
-    t.text    "adm",            null: false
+    t.string   "bid_request_id", null: false
+    t.string   "campaign_id",    null: false
+    t.decimal  "price",          null: false
+    t.text     "adm",            null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   add_index "bid_submissions", ["bid_request_id"], name: "bid_submissions_bid_request_id_idx", using: :btree

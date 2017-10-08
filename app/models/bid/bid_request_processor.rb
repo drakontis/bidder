@@ -25,7 +25,10 @@ module Bid
     #######
 
     def find_winner_campaign
-      matching_campaigns = campaigns.select{ |campaign| campaign.targeted_countries.include? bid_request.device.geo.country }
+      matching_campaigns = campaigns.select do |campaign|
+        campaign.targeted_countries.include?(bid_request.device.geo.country) && campaign.applicable_for_bid_submission?
+      end
+      
       matching_campaigns.max_by(&:price)
     end
 
