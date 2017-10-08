@@ -1,6 +1,6 @@
 class BidRequestsController < ApplicationController
   def create
-    processor = BidRequestProcessor.new(params['bid_request'])
+    processor = Bid::BidRequestProcessor.new(params['bid_request'])
     bid_responce = processor.process
 
     if bid_responce.present?

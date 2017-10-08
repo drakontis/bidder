@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe BidRequestProcessor do
+describe Bid::BidRequestProcessor do
 
   let(:json){
     {"id" => "e7fe51ce4f6376876353ff0961c2cb0d",
@@ -85,7 +85,7 @@ describe BidRequestProcessor do
       end
 
       it 'should initialize the processor' do
-        processor = BidRequestProcessor.new(json)
+        processor = Bid::BidRequestProcessor.new(json)
 
         expect(processor.bid_request).to be_a Bid::BidRequest
         expect(processor.bid_request.id).to eq 'e7fe51ce4f6376876353ff0961c2cb0d'
@@ -148,7 +148,7 @@ describe BidRequestProcessor do
       end
 
       it 'should initialize the processor' do
-        processor = BidRequestProcessor.new(json)
+        processor = Bid::BidRequestProcessor.new(json)
 
         expect(processor.bid_request).to be_a Bid::BidRequest
         expect(processor.bid_request.id).to eq 'e7fe51ce4f6376876353ff0961c2cb0d'
@@ -178,7 +178,7 @@ describe BidRequestProcessor do
       end
 
       it 'should return the bid response' do
-        process_result = BidRequestProcessor.new(json).process
+        process_result = Bid::BidRequestProcessor.new(json).process
 
         expect(process_result).to be_a Bid::BidSubmission
         expect(process_result.bid_request_id).to eq 'e7fe51ce4f6376876353ff0961c2cb0d'
@@ -194,7 +194,7 @@ describe BidRequestProcessor do
       end
 
       it 'should return empty bid submission' do
-        process_result = BidRequestProcessor.new(json).process
+        process_result = Bid::BidRequestProcessor.new(json).process
 
         expect(process_result).to be_nil
       end
